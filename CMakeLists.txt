@@ -23,6 +23,10 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 add_subdirectory(${CMAKE_SOURCE_DIR}/externals/pco)
 set(PCO_FOLDER "${CMAKE_SOURCE_DIR}/externals/pco")
 
-add_subdirectory(${CMAKE_SOURCE_DIR}/src/lnx/simple_open)
-add_subdirectory(${CMAKE_SOURCE_DIR}/src/lnx/read_from_camera_camram)
-add_subdirectory(${CMAKE_SOURCE_DIR}/src/lnx/grab_while_camera_running)
+if(WIN32)
+
+else()
+    add_subdirectory(${CMAKE_SOURCE_DIR}/src/lnx/simple_open)
+    add_subdirectory(${CMAKE_SOURCE_DIR}/src/lnx/read_from_camera_camram)
+    add_subdirectory(${CMAKE_SOURCE_DIR}/src/lnx/grab_while_camera_running)
+endif()

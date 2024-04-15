@@ -1,14 +1,23 @@
 # Copy pco.cpp files to local externals/pco
 # If you do not want an auto update, set AUTO_UPDATE_PCO_PACKAGE to false
 if(${AUTO_UPDATE_PCO_PACKAGE})
-  file(COPY
+  if(WIN32)
+    file(COPY
+      ${PCO_PACKAGE_INSTALL_DIR}/include
+      DESTINATION
+      ${CMAKE_CURRENT_SOURCE_DIR}
+      )
+      file(GLOB LIB_FILES "${PCO_PACKAGE_INSTALL_DIR}/lib64/*.lib")
+      file(GLOB DLL_FILES "${PCO_PACKAGE_INSTALL_DIR}/bin64/*.dll")
+      file(COPY ${LIB_FILES} ${DLL_FILES} DESTINATION ${CMAKE_CURRENT_SOURCE_DIR})
+      file(COPY ${PCO_PACKAGE_INSTALL_DIR}/bin64/genicam DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/bin)
+  else()
+    file(COPY
       ${PCO_PACKAGE_INSTALL_DIR}/include
       ${PCO_PACKAGE_INSTALL_DIR}/lib
       DESTINATION
       ${CMAKE_CURRENT_SOURCE_DIR}
       )
-  if(WIN32)
-    file(COPY ${PCO_PACKAGE_INSTALL_DIR}/bin64 DESTINATION ${CMAKE_CURRENT_SOURCE_DIR})
   endif()
 endif()
 
