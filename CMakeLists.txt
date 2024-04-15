@@ -24,7 +24,6 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/externals/pco)
 set(PCO_FOLDER "${CMAKE_SOURCE_DIR}/externals/pco")
 
 if(WIN32)
-    add_compile_definitions(_FILEFUNCTION_)
     add_subdirectory(${CMAKE_SOURCE_DIR}/src/win/console)
     add_subdirectory(${CMAKE_SOURCE_DIR}/src/win/sc2_demo)
     add_subdirectory(${CMAKE_SOURCE_DIR}/src/win/test_cvdlg)
