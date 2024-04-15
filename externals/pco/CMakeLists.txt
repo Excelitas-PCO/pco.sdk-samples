@@ -31,6 +31,14 @@ if(WIN32)
   set_property(TARGET sc2_cam PROPERTY IMPORTED_IMPLIB "${CMAKE_CURRENT_SOURCE_DIR}/lib/sc2_cam.lib")
   set_property(TARGET sc2_cam PROPERTY IMPORTED_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/bin/sc2_cam.dll")
 
+  add_library(sc2_dlg SHARED IMPORTED GLOBAL)
+  set_property(TARGET sc2_dlg PROPERTY IMPORTED_IMPLIB "${CMAKE_CURRENT_SOURCE_DIR}/lib/sc2_dlg.lib")
+  set_property(TARGET sc2_dlg PROPERTY IMPORTED_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/bin/sc2_dlg.dll")
+
+  add_library(pco_conv_dlg SHARED IMPORTED GLOBAL)
+  set_property(TARGET pco_conv_dlg PROPERTY IMPORTED_IMPLIB "${CMAKE_CURRENT_SOURCE_DIR}/lib/pco_cdlg.lib")
+  set_property(TARGET pco_conv_dlg PROPERTY IMPORTED_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/bin/pco_cdlg.dll")
+  
   file(GLOB SC2_LIB_FILES "${CMAKE_CURRENT_SOURCE_DIR}/bin/sc2_*.dll")
   file(GLOB PCO_LIB_FILES "${CMAKE_CURRENT_SOURCE_DIR}/bin/pco_*.dll")
 
@@ -38,6 +46,7 @@ if(WIN32)
   file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/bin/genicam" DESTINATION "${CMAKE_BINARY_DIR}")
   install(FILES ${SC2_LIB_FILES} ${PCO_LIB_FILES} DESTINATION bin)
   install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bin/genicam" DESTINATION bin)
+
 else()
   set_property(TARGET pco_convert PROPERTY IMPORTED_IMPLIB "${CMAKE_CURRENT_SOURCE_DIR}/lib/libpco_convert.so")
   set_property(TARGET pco_convert PROPERTY IMPORTED_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/lib/libpco_convert.so")
@@ -50,3 +59,4 @@ else()
   install(FILES ${LIB_FILES} DESTINATION lib)
   #install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/lib/genicam" DESTINATION lib)
 endif()
+

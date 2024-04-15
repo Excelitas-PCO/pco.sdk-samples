@@ -41,6 +41,7 @@ set(PROJECT_SOURCES
 )
     
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
+set_property(TARGET ${PROJECT_NAME} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 include_directories(${PCO_FOLDER})
 include_directories(${PCO_FOLDER}/include)

@@ -2,9 +2,9 @@
 #include <cstring>
 #include <thread>
 
-#ifdef FILEFUNCTION
-#include <tiff.h>
-#include <tiffio.h>
+#ifdef _FILEFUNCTION_
+#include "../libtiff_header/tiff.h"
+#include "../libtiff_header/tiffio.h"
 #endif
 
 #include <pco_linux_defs.h>
