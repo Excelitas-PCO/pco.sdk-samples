@@ -24,7 +24,8 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/externals/pco)
 set(PCO_FOLDER "${CMAKE_SOURCE_DIR}/externals/pco")
 
 if(WIN32)
-
+    add_compile_definitions(_FILEFUNCTION_)
+    add_subdirectory(${CMAKE_SOURCE_DIR}/src/win/console)
 else()
     add_subdirectory(${CMAKE_SOURCE_DIR}/src/lnx/simple_open)
     add_subdirectory(${CMAKE_SOURCE_DIR}/src/lnx/read_from_camera_camram)
