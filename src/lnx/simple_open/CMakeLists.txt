@@ -12,7 +12,6 @@ include_directories(${PCO_FOLDER}/include)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE pco_convert)
 target_link_libraries(${PROJECT_NAME} PRIVATE sc2_cam)
-target_link_libraries(${PROJECT_NAME} PRIVATE pco_recorder)
 
 install(TARGETS ${PROJECT_NAME})
 
@@ -32,7 +31,6 @@ include_directories(${PCO_FOLDER}/include)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE pco_convert)
 target_link_libraries(${PROJECT_NAME} PRIVATE sc2_cam)
-target_link_libraries(${PROJECT_NAME} PRIVATE pco_recorder)
 
 install(TARGETS ${PROJECT_NAME})
 
@@ -51,6 +49,5 @@ include_directories(${PCO_FOLDER}/include)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE pco_convert)
 target_link_libraries(${PROJECT_NAME} PRIVATE sc2_cam)
-target_link_libraries(${PROJECT_NAME} PRIVATE pco_recorder)
 
 install(TARGETS ${PROJECT_NAME})

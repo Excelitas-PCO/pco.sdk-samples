@@ -3,7 +3,7 @@
 if(${AUTO_UPDATE_PCO_PACKAGE})
   file(COPY
       ${PCO_PACKAGE_INSTALL_DIR}/include
-      ${PCO_PACKAGE_INSTALL_DIR}/lib64
+      ${PCO_PACKAGE_INSTALL_DIR}/lib
       DESTINATION
       ${CMAKE_CURRENT_SOURCE_DIR}
       )
