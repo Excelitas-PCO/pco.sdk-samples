@@ -101,14 +101,31 @@ BEGIN
         MENUITEM "Exit",                        ID_APP_EXIT
         MENUITEM "Open File",                   ID_FILE_OPENFILE
     END
-    POPUP "Edit"
+    POPUP "Options"
+    BEGIN
+        POPUP "Color Convert"
+        BEGIN
+            MENUITEM "Bayer Pattern 0",             ID_BAYER0
+            MENUITEM "Bayer Pattern 1",             ID_BAYER1
+            MENUITEM "Bayer Pattern 2",             ID_BAYER2
+            MENUITEM "Bayer Pattern 3",             ID_BAYER3
+        END
+        MENUITEM "BW Convert",                  ID_EDIT_BWCONVERT
+        MENUITEM "Pseudo Convert",              ID_EDIT_PSEUDOCONVERT
+        MENUITEM "Flip Image",                  ID_EDIT_FLIPIMAGE
+        MENUITEM "Mirror Image",                ID_EDIT_MIRRORIMAGE
+        POPUP "Bitmap"
+        BEGIN
+            MENUITEM "8bpp",                        ID_BITMAP_8BPP
+            MENUITEM "24bpp",                       ID_BITMAP_24BPP
+            MENUITEM "32bpp",                       ID_BITMAP_32BPP
+        END
+    END
+    POPUP "Dialog/Test"
     BEGIN
         MENUITEM "Open Convert Dialog",         ID_OPEN_CONVERTDIALOG
-        MENUITEM "Bayer Pattern 0",             ID_BAYER0
-        MENUITEM "Bayer Pattern 1",             ID_BAYER1
-        MENUITEM "Bayer Pattern 2",             ID_BAYER2
-        MENUITEM "Bayer Pattern 3",             ID_BAYER3
         MENUITEM "FPS Test",                    ID_FPSTEST
+        MENUITEM "FPS Test with Display",       ID_DIALOG_FPSTESTWITHDISPLAY
     END
 END
 
@@ -215,7 +232,7 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDP_OLE_INIT_FAILED     "OLE-Initialisierungsfehler. Stellen Sie sicher, dass die OLE-Bibliotheken in der richtigen Version vorliegen."
+    IDP_OLE_INIT_FAILED     "OLE-Init failed."
 END
 
 STRINGTABLE 
@@ -226,7 +243,7 @@ END
 STRINGTABLE 
 BEGIN
     AFX_IDS_APP_TITLE       "Test_cvDlg"
-    AFX_IDS_IDLEMESSAGE     "Bereit"
+    AFX_IDS_IDLEMESSAGE     "Ready"
 END
 
 STRINGTABLE 
@@ -241,71 +258,10 @@ END
 
 STRINGTABLE 
 BEGIN
-    ID_FILE_PAGE_SETUP      "Ändert die Druckoptionen.\nSeite einrichten"
-    ID_FILE_PRINT_SETUP     "Ändert den Drucker und die Druckoptionen.\nDruckereinrichtung"
-    ID_FILE_PRINT           "Druckt das aktive Dokument.\nDrucken"
-    ID_FILE_PRINT_PREVIEW   "Zeigt ganze Seiten an.\nSeitenansicht"
+    ID_APP_ABOUT            "Shows copyright.\nInfo"
+    ID_APP_EXIT             "Stops application.\nExit"
 END
 
-STRINGTABLE 
-BEGIN
-    ID_APP_ABOUT            "Zeigt Programm-, Versions- und Copyrightinformationen an.\nInfo"
-    ID_APP_EXIT             "Beendet die Anwendung und fordert zum Speichern der Dokumente auf.\nBeenden"
-END
-
-STRINGTABLE 
-BEGIN
-    ID_NEXT_PANE            "Wechselt zum nächsten Fensterbereich.\nNächster Bereich"
-    ID_PREV_PANE            "Wechselt zum vorherigen Fensterbereich.\nVorheriger Bereich"
-END
-
-STRINGTABLE 
-BEGIN
-    ID_WINDOW_SPLIT         "Teilt das aktive Fenster in Bereiche.\nTeilen"
-END
-
-STRINGTABLE 
-BEGIN
-    ID_EDIT_CLEAR           "Löscht die Auswahl.\nLöschen"
-    ID_EDIT_CLEAR_ALL       "Löscht alles.\nAlles löschen"
-    ID_EDIT_COPY            "Kopiert die Auswahl in die Zwischenablage.\nKopieren"
-    ID_EDIT_CUT             "Überträgt die Auswahl in die Zwischenablage.\nAusschneiden"
-    ID_EDIT_FIND            "Sucht den angegebenen Text.\nSuchen"
-    ID_EDIT_PASTE           "Fügt den Inhalt der Zwischenablage ein.\nEinfügen"
-    ID_EDIT_REPEAT          "Wiederholt den letzten Vorgang.\nWiederholen"
-    ID_EDIT_REPLACE         "Ersetzt den angegebenen Text.\nErsetzen"
-    ID_EDIT_SELECT_ALL      "Markiert das gesamte Dokument.\nAlles auswählen"
-    ID_EDIT_UNDO            "Macht den letzten Vorgang rückgängig.\nRückgängig"
-    ID_EDIT_REDO            "Wiederholt den zuletzt rückgängig gemachten Vorgang.\nWiederherstellen"
-END
-
-STRINGTABLE 
-BEGIN
-    ID_VIEW_TOOLBAR         "Blendet die Symbolleiste ein oder aus.\nSymbolleiste"
-    ID_VIEW_STATUS_BAR      "Blendet die Statusleiste ein oder aus.\nStatusleiste"
-END
-
-STRINGTABLE 
-BEGIN
-    AFX_IDS_SCSIZE          "Ändert die Fenstergröße."
-    AFX_IDS_SCMOVE          "Ändert die Position des Fensters."
-    AFX_IDS_SCMINIMIZE      "Minimiert das Fenster."
-    AFX_IDS_SCMAXIMIZE      "Maximiert das Fenster."
-    AFX_IDS_SCNEXTWINDOW    "Wechselt zum nächsten Dokumentfenster."
-    AFX_IDS_SCPREVWINDOW    "Wechselt zum vorherigen Dokumentfenster."
-    AFX_IDS_SCCLOSE         "Schließt das aktive Fenster und fordert zum Speichern des Dokuments auf."
-END
-
-STRINGTABLE 
-BEGIN
-    AFX_IDS_SCRESTORE       "Stellt die ursprüngliche Fenstergröße wieder her."
-    AFX_IDS_SCTASKLIST      "Aktiviert die Taskliste."
-END
-
-STRINGTABLE 
-BEGIN
-    AFX_IDS_PREVIEW_CLOSE   "Beendet die Seitenansicht.\nSeitenansicht beenden"
-END
 
 #endif    // German (Germany) resources
 /////////////////////////////////////////////////////////////////////////////

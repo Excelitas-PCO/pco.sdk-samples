@@ -1,4 +1,4 @@
-set(PROJECT_NAME Test_cvDlg)
+set(PROJECT_NAME PCOTest_cvDlg)
 
 set(PROJECT_SOURCES
   File12.cpp

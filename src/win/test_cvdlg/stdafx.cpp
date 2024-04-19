@@ -1,6 +1,6 @@
-// stdafx.cpp : Quelldatei, die nur die Standard-Includes einbindet
-// Test_cvDlg.pch ist der vorkompilierte Header
-// stdafx.obj enthält die vorkompilierten Typinformationen
+// stdafx.cpp : adds standard-Includes
+// Test_cvDlg.pch is the pecompiled eader
+// stdafx.obj contains precompiled type information
 
 #include "stdafx.h"
 

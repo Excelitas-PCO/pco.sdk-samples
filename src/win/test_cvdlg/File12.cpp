@@ -5,8 +5,8 @@
 #define FILEVERSION200 200
 #define FILEVERSION300 300
 #define FILEVERSION301 301
-#define FILEVERSION302 302             // eingeführt 05.2005 / ab CamWare 2.13
-#define FILEVERSION303 303             // eingeführt 04.2008 / ab CamWare 2.21
+#define FILEVERSION302 302
+#define FILEVERSION303 303             // starting 04.2008 with CamWare 2.21
 
 
 #endif
@@ -30,7 +30,7 @@ void Shift(WORD* data, unsigned long k, bool bup, unsigned long bits)
 /********************************************************************************************************/
 /* added TIFF - Reader... Franz Reitner/24.06.1999                                                        */
 /********************************************************************************************************/
-const short ImageWidth      = 256;     // IFD - Einträge (Image File Descriptor)
+const short ImageWidth      = 256;     // IFD - entries (Image File Descriptor)
 const short ImageHeight     = 257;
 const short BitsPerPixel    = 258;
 const short Compression     = 259;
@@ -45,19 +45,19 @@ const short PlanarConfig    = 284;
 const short ResolutionUnits = 296;
 const short ColorMap        = 320;
 
-/* Aufbau TIF - File: Header 0x49 0x49 0x2A 0x2A(Kennung mit Version)
-XXXXYYYY(Offset für IFD)
-.... DATEN(entweder vor oder nach IFD)
-bei Adresse XXXXYYYY: ZZZZ Anzahl Einträge in IFD
+/* General TIF - File: Header 0x49 0x49 0x2A 0x2A (Identification with version)
+XXXXYYYY(Offset for IFD)
+.... DATA (usually before or after IFD)
+at adress XXXXYYYY: ZZZZ Number of entries in IFD
 .... IFDs
-.... DATEN(entweder vor oder nach IFD) */
+.... DATA (usually before or after IFD) */
 
-typedef struct                         // IFD - Struktur
+typedef struct                         // IFD - Structure
 {
   unsigned short TagField;             // IFD ID
   unsigned short ftype;                // Type (Byte,String,Short,Long,Float)
-  unsigned long length;                // Anzahl Einträge
-  unsigned long Offset;                // Datum, falls Anzahl Einträge=1; ansonsten Offset im File
+  unsigned long length;                // Number of entries
+  unsigned long Offset;                // Date, if entry # =1; otherwise offset in file
 }TE;
 
 TE TIFFEntry;
@@ -96,12 +96,12 @@ int IsTiffFile(char *filename, HANDLE file)
   else
   {
     if ((bfr[0] == 'I') &&(bfr[1] == 'I') &&(bfr[2] == 0x2A) &&(bfr[3] == 0))
-      ok = FILEISOK;                   // nur INTEL-Format wird gelesen, sonst Drehwurm
-    else                               // Intel speichert zuerst Lowbyte dann Highbyte ab
-      if ((bfr[0] == 'M') &&(bfr[1] == 'M') &&(bfr[3] == 0x2A) &&(bfr[2] == 0))
-        ok = FILEISOK | FILEISMACFORMAT;                   // nur INTEL-Format wird gelesen, sonst Drehwurm
-      else                               // Intel speichert zuerst Lowbyte dann Highbyte ab
-        ok = 0;                          // 0x1234 steht im Speicher als 34 12, bei Motorroller umgekehrt
+      ok = FILEISOK;                   // read INTEL-format only
+    else                               // Intel saves Lowbyte then Highbyte
+    if ((bfr[0] == 'M') &&(bfr[1] == 'M') &&(bfr[3] == 0x2A) &&(bfr[2] == 0))
+      ok = FILEISOK | FILEISMACFORMAT;
+    else
+      ok = 0;
   }
   SetFilePointer(file, currPos, 0, FILE_BEGIN);
   if (bl)
@@ -130,7 +130,7 @@ int getsize_tif (char *filename, int *iXRes, int *iYRes, bool *bDouble)
   long offset = 0, lh;
   unsigned short ush, ush2;
   DWORD read = 0;
-  Bild *strBild;
+  Bild *strBild = {0};
   bool bmacformat = FALSE;
 
   *bDouble = FALSE;
@@ -233,7 +233,7 @@ int getsize_tif (char *filename, int *iXRes, int *iYRes, bool *bDouble)
       pucdat = (unsigned char*) malloc(ilen + 0x10);
       strBild = (Bild*)&pucdat[0];
 
-      if((TIFFEntry.ftype == 4)||(TIFFEntry.ftype == 1))// Type 4: Multitif (alt); Type 1: Multitif und normales Tif (neu, 303) 
+      if((TIFFEntry.ftype == 4)||(TIFFEntry.ftype == 1))// Type 4: Multitif (old); Type 1: Multitif and normal Tif (new, 303) 
       {
         strBild = (Bild*)&pucdat[2];
       }
@@ -343,8 +343,8 @@ int read_tif (char *filename, Bild* strBild, int iNoShifting)
     ifdcnt = ush;
   offset += 2;
 
-  for (int i = 0; i < ifdcnt; i++)      // Einträge siehe TIFF - Beschreibung (tiff.pdf vom 03.06.1992)
-  {                                    //                       (ist aktuelle Vers.! 24.06.1999/Franz)
+  for (int i = 0; i < ifdcnt; i++)      // Entries like TIFF - description (tiff.pdf of 03.06.1992)
+  {                                     //                       (is current Version! 24.06.1999/Franz)
     //                       (http:// www.adobe.com)
     SetFilePointer(hfread, offset + i * sizeof(TIFFEntry), 0, FILE_BEGIN);
     ReadFile(hfread, &TIFFEntry, sizeof(TIFFEntry), &read, 0);
@@ -393,7 +393,7 @@ int read_tif (char *filename, Bild* strBild, int iNoShifting)
           height = TIFFEntry.Offset;// dword
         break;
       }
-      case BitsPerPixel:               // Auflösung in bit je Pixel (8bit BW, 16bit BW oder 24bit RGB)
+      case BitsPerPixel:               // Bit resolution in bit per Pixel (8bit BW, 16bit BW or 24bit RGB)
       {
         short sValue;
 
@@ -437,14 +437,14 @@ int read_tif (char *filename, Bild* strBild, int iNoShifting)
         }
         break;
       }
-      case Compression:                // 1: kein Packen, 2: Huffman, 3: Fax G3,
+      case Compression:                // 1: unpacked, 2: Huffman, 3: Fax G3,
       {                               // 4: Fax G4, 5: LZW, 32773: PackBits
         if (TIFFEntry.Offset != 1)// word
           err = PCO_ERROR_CAMWARE + PCO_ERROR_APPLICATION + PCO_ERROR_WRONGVALUE;
         break;
       }
-      case PhotoInterp:                // 0: bilevel u. Graustufen, 0 ist weis, 1: bilevel u. Gr., 0 ist schwarz
-      {                               // 2: RGB 3: RGB über Palette (nicht ausgeführt)
+      case PhotoInterp:                // 0: bilevel and gray levels, 0 is white, 1: bilevel a. Gr., 0 is black
+      {                               // 2: RGB 3: RGB by palette (nicht implemented)
         if ((TIFFEntry.Offset != 1) &&(TIFFEntry.Offset != 2))// word
           err = PCO_ERROR_CAMWARE + PCO_ERROR_APPLICATION + PCO_ERROR_WRONGVALUE;
         break;
@@ -476,13 +476,14 @@ int read_tif (char *filename, Bild* strBild, int iNoShifting)
         }
         if(ilen > (sizeof(Bild) - sizeof(void*)))
           ilen = (sizeof(Bild) - sizeof(void*));
-        pucdat = (unsigned char*) malloc(ilen + 0x10);
+        pucdat = (unsigned char*) malloc(sizeof(Bild) + 0x10);
+        memset(pucdat, 0, sizeof(Bild) + 0x10);
 #if defined _WIN64
         strbildl = (Bild*)&pucdat[0];
 #else
         strbildl = (Bild*)&pucdat[4];
 #endif
-        if((TIFFEntry.ftype == 4)||(TIFFEntry.ftype == 1))// 4: Multi(alt) 1: tif und multi (neu, ab 303)
+        if((TIFFEntry.ftype == 4)||(TIFFEntry.ftype == 1))// 4: Multi(old) 1: tif and multi (new, >= 303)
         {
 #if defined _WIN64
           strbildl = (Bild*)&pucdat[2];
@@ -536,7 +537,7 @@ int read_tif (char *filename, Bild* strBild, int iNoShifting)
 
         break;
       }
-      case StripOffsets:               // Adresse der einzelnen Strips in der Datei
+      case StripOffsets:               // Adress of single strips in file
       {
         DataOffset = TIFFEntry.Offset;
         if (TIFFEntry.length > 1)
@@ -610,7 +611,7 @@ int read_tif (char *filename, Bild* strBild, int iNoShifting)
           err = PCO_ERROR_CAMWARE + PCO_ERROR_APPLICATION + PCO_ERROR_WRONGVALUE;
         break;
       }
-      case RowsPerStrip:               // Anzahl Pixel je Strip
+      case RowsPerStrip:               // Number of pixel per strip
       {
         if (TIFFEntry.ftype == 3)
           iRowsPerStrip = TIFFEntry.Offset;
@@ -621,7 +622,7 @@ int read_tif (char *filename, Bild* strBild, int iNoShifting)
             err = PCO_ERROR_CAMWARE + PCO_ERROR_APPLICATION + PCO_ERROR_WRONGVALUE;
         break;
       }
-      case StripByteCnt:               // Anzahl Bytes der jeweiligen Strips
+      case StripByteCnt:               // Number of bytes per strip
       {
         DataOffset = TIFFEntry.Offset;
         char cSize[6] = { 0, 1, 0, 2, 4, 8 };
@@ -686,7 +687,7 @@ int read_tif (char *filename, Bild* strBild, int iNoShifting)
         }
         break;
       }
-      case PlanarConfig:               // 1: BW, normal RGB (RGBRGBRGB...) 2: Planes (nicht ausgeführt)
+      case PlanarConfig:               // 1: BW, normal RGB (RGBRGBRGB...) 2: Planes (not implemented)
       {
         if (TIFFEntry.Offset != 1)// word
           err = PCO_ERROR_CAMWARE + PCO_ERROR_APPLICATION + PCO_ERROR_WRONGVALUE;
@@ -703,7 +704,7 @@ int read_tif (char *filename, Bild* strBild, int iNoShifting)
   if(bmulti == TRUE)
   {
     if(*SByteCnt != (DWORD)(width * height * iImageType))
-      *SByteCnt = (DWORD)(width * height * iImageType);// Korrektur eines Fehlers in mmfilewriter...
+      *SByteCnt = (DWORD)(width * height * iImageType);// correct error in mmfilewriter...
   }
 
   if (err)
@@ -727,51 +728,51 @@ int read_tif (char *filename, Bild* strBild, int iNoShifting)
   os =(WORD*)SDataOffset;
   bc =(WORD*)SByteCnt;
   cp = p;
-  for (short j = 0; j < SCnt; j++)      // Stripdaten aus File auslesen und in Zwischenspeicher eintragen
+  for (short j = 0; j < SCnt; j++)      // read stripdata from file
   {
-    if (SBytes == 4)                    // Pointer sind DWORDs
+    if (SBytes == 4)                    // Pointer are DWORDs
     {
       dwp =(DWORD*)os;
       lOs = *dwp;
       dwp =(DWORD*)bc;
       lBc = *dwp;
     }
-    else                               // Pointer sind WORDs
+    else                               // Pointer are WORDs
     {
       lOs = *os;
       lBc = *bc;
     }
     if (SetFilePointer(hfread, lOs, 0, FILE_BEGIN) != lOs)
-    {                                  // Dateioffset setzen
+    {                                  // set file offset
       err = PCO_ERROR_CAMWARE + PCO_ERROR_APPLICATION + PCO_ERROR_WRONGVALUE;
       break;
     }
 
-    ReadFile(hfread, cp, lBc, &read, 0);// Daten auslesen
+    ReadFile(hfread, cp, lBc, &read, 0);// read data
     // DWORD x = GetLastError();// winerror.h winbase.h
 
-    if (read != lBc)                    // gelesen = gefordert ?
+    if (read != lBc)                    // bytes read = bytes requested ?
     {
       err = PCO_ERROR_CAMWARE + PCO_ERROR_APPLICATION + PCO_ERROR_WRONGVALUE;
       break;
     }
-    os++;                              // Pointer erhöhen um 2 Byte
+    os++;                               // Increment pointer by 2 Byte
     bc++;
-    if (SBytes == 4)                    // falls DWORDs nochmals um 2 Byte erhöhen
+    if (SBytes == 4)                    // If DWORDs add another 2 Byte
     {
       os++;
       bc++;
     }
     // cp += (read>>1);
-    cccp =(char*) cp;                 // Ziel um Anzahl gelesener Bytes erhöhen 
+    cccp =(char*) cp;                   // Increment target by bytes read
     cccp += read;
     cp =(WORD*) cccp;
   }
 
-  CloseHandle(hfread);                 // Datei schliessen
+  CloseHandle(hfread);                  // close file
 
   if (err != PCO_NOERROR)
-  {                                    // bei Fehler Filedatenspeicher freigeben
+  {                                    // release mem in case of an error
     if (p != NULL)
     {
       free(p);
@@ -779,7 +780,7 @@ int read_tif (char *filename, Bild* strBild, int iNoShifting)
     }
   }
 
-  if (SDataOffset != NULL)              // Speicher freigeben
+  if (SDataOffset != NULL)              // release data
     free(SDataOffset);
   if (SByteCnt != NULL)
     free(SByteCnt);
@@ -794,40 +795,40 @@ int read_tif (char *filename, Bild* strBild, int iNoShifting)
     return (PCO_ERROR_CAMWARE + PCO_ERROR_APPLICATION + PCO_ERROR_NOFILE);
   }
 
-  strBild->iXRes = width;              // Bildgrössen übergeben
+  strBild->iXRes = width;               // forward image size
   strBild->iYRes = height;
 
-  if (iImageType == 1)                  // 8bit BW in 16bit Rohformat eintragen
+  if (iImageType == 1)                  // 8bit BW in 16bit raw data
   {
     short *spl;
     char  *cpl;
     long k, l;
 
-    spl =(short*)im;                  // Zieldaten
-    cpl =(char*) p;                   // Filedaten
+    spl =(short*)im;                  // target data
+    cpl =(char*) p;                   // file data
 
     for (k = 0; k < height; k++)
     {
       for (l = 0; l < width; l++)
       {
-        *spl = (unsigned char)*cpl;                   // 8bit übernehmen
+        *spl = (unsigned char)*cpl;   // forward 8bit directly
         *spl <<= ishift;
 
-        spl++;                         // nächstes Pixel
+        spl++;                        // next Pixel
         cpl++;
       }
     }
   }
 
-  if (iImageType == 2)                  // 16bit direkt kopieren
+  if (iImageType == 2)                // copy 16bit directly
   {
     long m;
     WORD *o;
 
     o = p;
-    memset(im, 0, width * height *2);    // Zieldaten auf 0 setzen
-    for (m = 0; m < height; m++)        // zeilenweise umkopieren, da Bytes ausgeblendet
-    {                                  // werden, um 4 Byte Grenzen einzuhalten
+    memset(im, 0, width * height *2); // set target data to 0
+    for (m = 0; m < height; m++)      // copy line by line as bytes are dropped
+    {                                 // to meet 4 byte limits
       if(bmacformat)
       {
         for (int ix = 0; ix < width; ix++)
@@ -840,11 +841,11 @@ int read_tif (char *filename, Bild* strBild, int iNoShifting)
       else
         memcpy((WORD*)im + m * width, (const void*)o, width * 2);
 
-      o += width;                      // nächste Zeile
+      o += width;                      // next line
     }
   }
 
-  if ((iImageType == 3) ||(iImageType == 4))// RGB auf Rohformat filtern
+  if ((iImageType == 3) ||(iImageType == 4))// filter RGB to raw data
   {
     long k, l;
     bool bRed = TRUE;
@@ -852,57 +853,57 @@ int read_tif (char *filename, Bild* strBild, int iNoShifting)
     unsigned char *cpl;
     unsigned short *spl;
 
-    cpl =(unsigned char*) p;                   // Bilddaten aus File
-    spl =(unsigned short*) im;                 // Bilddaten (Ziel)
+    cpl =(unsigned char*) p;                   // Imagedata from file
+    spl =(unsigned short*) im;                 // Imagedata target
     for (k = 0; k < height; k++)
     {
       bTog = TRUE;
-      if (bRed)                         // rote Zeile
+      if (bRed)                         // red line
       {
         for (l = 0; l < width; l++)
         {
-          *spl = (unsigned char)*cpl;   // 8bit Inhalt übernehmen
+          *spl = (unsigned char)*cpl;   // get 8bit data
           *spl <<= ishift;
-          if (bTog)                     // zeigt auf roten Pixel
+          if (bTog)                     // red pixel
           {
             bTog = FALSE;
-            cpl += 4;                  // nächster ist grün
+            cpl += 4;                  // next is green
           }
-          else                         // zeigt auf grünen Pixel
+          else                         // green pixel
           {
             bTog = TRUE;
-            cpl += 2;                  // nächster ist rot
+            cpl += 2;                  // next is red
           }
-          if (iImageType == 4)          // 4. Byte ausblenden
+          if (iImageType == 4)          // skip 4. byte
             cpl++;
           spl++;
         } 
         if(bTog)
-          cpl++;                        // vorbereiten auf blaue Zeile, nächster ist grün
+          cpl++;                        // prepare for blue line, next is green
         bRed = FALSE;
       }
-      else                             // blaue Zeile
+      else                             // blue line
       {
         for (l = 0; l < width; l++)
         {
           *spl = (unsigned char)*cpl;
           *spl <<= ishift;
-          if (bTog)                     // zeigt auf grünen Pixel
+          if (bTog)                     // green pixel
           {
             bTog = FALSE;
-            cpl += 4;                  // nächster ist blau
+            cpl += 4;                  // next is blue
           }
-          else                         // zeigt auf blauen Pixel
+          else                         // blue pixel
           {
             bTog = TRUE;
-            cpl += 2;                  // nächster ist grün
+            cpl += 2;                  // next is green
           }
-          if (iImageType == 4)          // 4. Byte ausblenden
+          if (iImageType == 4)          // skip 4. byte
             cpl++;
           spl++;
         } 
         if(!bTog)
-          cpl -= 2;                     // vorbereiten auf rote Zeile, nächster ist rot
+          cpl -= 2;                     // prepare for red line, next is red
         else
           cpl--;
         bRed = TRUE;

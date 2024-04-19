@@ -1,4 +1,4 @@
-// ChildView.h : Schnittstelle der Klasse CChildView
+// ChildView.h : Target class CChildView
 //
 
 #pragma once
@@ -7,29 +7,30 @@
 
 class CChildView : public CWnd
 {
-  // Konstruktion
+  // Constructor
 public:
 
   CChildView();
 
-  // Attribute
+  // Attributes
 public:
 
-  // Vorgänge
 public:
   int SetBitmap(byte* pdata, int iwidth, int iheight);
+  int CreateBitmap(int ibpp, void** pdata, int iwidth, int iheight);
+  void SetData(byte* pdata);
+  void SetData(byte* pdata, int iwidth, int iheight,int x_off,int y_off);
 
-  // Überschreibungen
 protected:
   virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 
-  // Implementierung
 public:
   virtual ~CChildView();
 protected:
   HBITMAP m_handleBitmap;
-  int m_iXRes, m_iYRes;
-  // Generierte Funktionen für die Meldungstabellen
+  int m_iXRes, m_iYRes,m_Pix_byte;
+  unsigned char *pic8;
+
 protected:
 
   DECLARE_MESSAGE_MAP()

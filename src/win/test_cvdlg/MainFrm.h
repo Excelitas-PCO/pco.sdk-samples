@@ -1,4 +1,4 @@
-// MainFrm.h : Schnittstelle der Klasse CMainFrame
+// MainFrm.h : taraget class CMainFrame
 //
 
 #pragma once
@@ -9,34 +9,38 @@ class CMainFrame : public CFrameWnd
 {
 public:
   HWND hwnd_frame;
-  byte *output_image;
+  BYTE *output_image;
   WORD *input_image;
   int pic_width;
   int pic_height;
   int m_iMode;
   int m_iColMode;
   PCO_Convert *col_lut;
+  int m_iConvertType;
+  int m_ibpp;
+  bool m_Flip,m_Mirror;
+  bool m_alloc_output;
+
+  PCO_SensorInfo strsensorinf;
 
   HANDLE m_hLut;
   HANDLE m_hLutDialog;
-  HANDLE m_hLutDialog16;
+//  HANDLE m_hLutDialog16;
 
 public:
   CMainFrame();
 protected: 
   DECLARE_DYNAMIC(CMainFrame)
 
-  // Attribute
 public:
 
-  // Vorgänge
 public:
 
-  // Überschreibungen
 public:
   virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
   virtual BOOL OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo);
   void SetMode(int bayer, bool bflip, bool bmirror);
+  void SetConvert(int convert);
   void DoConvert();
   double TT();
 public:
@@ -46,14 +50,12 @@ public:
   virtual void Dump(CDumpContext& dc) const;
 #endif
 
-protected:  // Eingebettete Member der Steuerleiste
+protected:
   HANDLE      m_hConvertThread;
 
 public:
   CChildView    m_wndView;
 
-
-  // Generierte Funktionen für die Meldungstabellen
 protected:
   afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
   afx_msg void OnSetFocus(CWnd *pOldWnd);
@@ -71,9 +73,15 @@ public:
   afx_msg void OnUpdateBayer2(CCmdUI *pCmdUI);
   afx_msg void OnBayer3();
   afx_msg void OnUpdateBayer3(CCmdUI *pCmdUI);
-  afx_msg void OnUpdateOpenConvertdialog(CCmdUI *pCmdUI);
   afx_msg void OnFPSTest();
   afx_msg void OnUpdateFPSTest(CCmdUI *pCmdUI);
+  afx_msg void OnEditBwconvert();
+  afx_msg void OnEditFlipimage();
+  afx_msg void OnEditMirrorimage();
+  afx_msg void OnEditPseudoconvert();
+  afx_msg void OnBitmap32bpp();
+  afx_msg void OnBitmap24bpp();
+  afx_msg void OnDialogFpstestwithdisplay();
 };
 
 
